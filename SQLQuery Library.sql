@@ -30,7 +30,7 @@ CREATE TABLE tbl_book_auhors (
 	book_id INT NOT NULL CONSTRAINT fk_book_id2 FOREIGN KEY REFERENCES tbl_books(book_id) ON UPDATE CASCADE ON DELETE CASCADE,
 	author_name VARCHAR(50) NOT NULL,
 );
-
+DROP TABLE tbl_borrower
 CREATE TABLE tbl_borrower (
 	card_no INT PRIMARY KEY NOT NULL IDENTITY (1,1),
 	name VARCHAR(50) NOT NULL,
@@ -39,11 +39,11 @@ CREATE TABLE tbl_borrower (
 );
 DROP TABLE tbl_book_loans
 CREATE TABLE tbl_book_loans (
-	book_id INT NOT NULL CONSTRAINT fk_book_id3 FOREIGN KEY REFERENCES tbl_books(book_id) ON UPDATE CASCADE ON DELETE CASCADE,
+	book_id INT NULL CONSTRAINT fk_book_id3 FOREIGN KEY REFERENCES tbl_books(book_id) ON UPDATE CASCADE ON DELETE CASCADE,
 	branch_id INT NOT NULL CONSTRAINT fk_branch_id2 FOREIGN KEY REFERENCES tbl_library_branch(branch_id) ON UPDATE CASCADE ON DELETE CASCADE,
 	card_no INT NOT NULL CONSTRAINT fk_card_no FOREIGN KEY REFERENCES tbl_borrower(card_no) ON UPDATE CASCADE ON DELETE CASCADE,
-	date_out datetime default GETDATE() NULL,
-	date_due datetime default DATEADD(day, 7, GETDATE())NOT NULL
+	date_out date default GETDATE() NULL,
+	date_due date default DATEADD(day, 7, GETDATE())NOT NULL
 );
 
 
@@ -226,6 +226,7 @@ INSERT INTO tbl_book_copies
 	SELECT * FROM tbl_book_copies;
 
 	DELETE FROM tbl_borrower
+	DBCC CHECKIDENT (tbl_borrower, RESEED, 0);
 INSERT INTO tbl_borrower
 		(name, address, phone)
 		VALUES 
@@ -238,10 +239,11 @@ INSERT INTO tbl_borrower
 		('Pasty Schildgen', '543 s 58th ave', '555-687-8524'),
 		('Buddy Villalta', '314 s 14 pl', '555-687-4963'),
 		('Leila Moody', '14 s main st', '555-687-3589'),
-		('Fransisca Ginther', '335 w clark st', '555-687-7578')
+		('Fransisca Ginther', '335 w clark st', '555-687-7578'),
+		('This Guy', '545 w n 5th st', '555-687-4653')
 	;
 	SELECT * FROM tbl_borrower;
-
+	SELECT * FROM tbl_book_loans;
 
 
 	DELETE FROM tbl_book_loans
@@ -308,5 +310,6 @@ INSERT INTO tbl_book_loans
 		(38, 4, 9),
 
 		(20, 4, 10)  -- Person 10
+
 	;
 	SELECT * FROM tbl_book_loans;
